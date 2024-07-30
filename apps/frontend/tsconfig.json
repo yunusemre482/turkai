@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
     "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+		"importHelpers": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"skipLibCheck": true,
+		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
   },
   "files": [],
   "include": [],

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,17 +7,83 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('../views/HomeView.vue'),
+      meta: {
+        authRequired: 'false',
+      },
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/auth/login',
+      name: 'login',
+      component: () => import('../views/Authentication/SigninView.vue'),
+      meta: {
+        authRequired: 'false',
+      },
     },
+    {
+      path: '/auth/register',
+      name: 'register',
+      component: () => import('../views/Authentication/SignupView.vue'),
+      meta: {
+        authRequired: 'false',
+      },
+    },
+    {
+      path: '/employee',
+      name: 'employee',
+      component: () => import('../views/EmployeeView.vue'),
+      meta: {
+        authRequired: 'true',
+      },
+    },
+    {
+      path: '/employee/:id',
+      name: 'employee-detail',
+      component: () => import('../views/EmployeeDetailView.vue'),
+      meta: {
+        authRequired: 'true',
+      },
+    },
+    {
+      path: '/companies',
+      name: 'companies',
+      component: () => import('../views/CompanyView.vue'),
+      meta: {
+        authRequired: 'true',
+      },
+    },
+    {
+      path: '/companies/:id',
+      name: 'company-detail',
+      component: () => import('../views/CompanyDetailView.vue'),
+      meta: {
+        authRequired: 'true',
+      },
+    }
   ],
+});
+
+
+router.beforeEach((to, from, next) => {
+  //check page is protected or not
+  if (to.meta.authRequired === 'true') {
+
+
+    //access check
+    if (
+      //if user is admin or super admin
+      to.meta.role === 'admin' && localStorage.getItem('role') === 'admin'
+      //if user is logged in
+    ) {
+      return next()
+    } else {
+      router.push({
+        name: 'Unauthorized'
+      })
+    }
+  } else {
+    return next()
+  }
 });
 
 export default router;
