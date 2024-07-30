@@ -17,7 +17,7 @@ model User {
   id        String     @id @default(uuid())
   email     String     @unique
   password  String
-  roles     Role[]
+  roles     Role[]     @default([EMPLOYEE])
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   deletedAt DateTime?
@@ -27,29 +27,36 @@ model User {
 }
 
 model Company {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  logo      String
-  website   String
-  employees Employee[]
+  id          String        @id @default(uuid())
+  name        String
+  email       String        @unique
+  logo        String
+  website     String
+  phone       String
+  description String
+  employees   Employee[]
+  status      CompanyStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  deletedAt   DateTime?
 
   @@index([name], name: "name")
   @@map("companies")
 }
 
 model Employee {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   firstName String
   lastName  String
   email     String
   phone     String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   companyId String
-  company   Company  @relation(fields: [companyId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  company   Company   @relation(fields: [companyId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@index([userId], name: "userId")
   @@index([companyId], name: "companyId")
@@ -59,4 +66,9 @@ model Employee {
 enum Role {
   ADMIN
   EMPLOYEE
+}
+
+enum CompanyStatus {
+  ACTIVE
+  INACTIVE
 }

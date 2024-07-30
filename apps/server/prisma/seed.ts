@@ -6,14 +6,22 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
+    // update transection time out
+    await prisma.$executeRaw`SET statement_timeout = 15000`;
+
     await prisma.$transaction(async (tx) => {
 
-      const users = await Promise.all(Array.from({ length: 150 }).map(async () => {
-        const password = await argon.hash(faker.internet.password());
+      const users = await Promise.all(Array.from({ length: 50 }).map(async () => {
+        const email = faker.internet.email();
+        const password = faker.internet.password();
+        const hashedPassword = await argon.hash(password);
+
+        console.log("normal user created for emplooyees with email: ", email, " and password:", password);
+
         return tx.user.create({
           data: {
-            email: faker.internet.email(),
-            password,
+            email: email,
+            password: hashedPassword,
             roles: [Role.EMPLOYEE],
           },
         });
@@ -22,14 +30,15 @@ async function main() {
 
       const admins = await Promise.all(Array.from({ length: 5 }).map(async () => {
         const email = faker.internet.email();
-        const password = await argon.hash(faker.internet.password());
+        const password = faker.internet.password();
+        const hashedPassword = await argon.hash(password);
 
         console.log("admin user created with email: ", email, " and password:", password);
 
         return tx.user.create({
           data: {
-            email: faker.internet.email(),
-            password,
+            email: email,
+            password: hashedPassword,
             roles: [Role.ADMIN],
           },
         });
@@ -42,12 +51,14 @@ async function main() {
             email: faker.internet.email(),
             logo: faker.image.url(),
             website: faker.internet.url(),
+            description: faker.lorem.sentence(),
+            phone: faker.phone.number(),
           },
         });
       }));
 
 
-      const employees = await Promise.all(Array.from({ length: 150 }).map(async (_, index) => {
+      const employees = await Promise.all(Array.from({ length: 50 }).map(async (_, index) => {
         return tx.employee.create({
           data: {
             firstName: faker.person.firstName(),
