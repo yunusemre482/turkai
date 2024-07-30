@@ -33,7 +33,14 @@ import { join } from 'path';
   providers: [AppService,
     {
       provide: APP_PIPE,
-      useClass: ValidationPipe
+      useClass: ValidationPipe.bind(null, {
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+      }),
     },
     {
       provide: APP_INTERCEPTOR,
