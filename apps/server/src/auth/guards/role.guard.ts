@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Inject } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Inject, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { CustomAuthGuard } from './auth.guard';
 import { AuthService } from '../auth.service';
@@ -9,6 +9,9 @@ import { Role } from '@prisma/client';
 
 @Injectable()
 export class RolesGuard extends CustomAuthGuard implements CanActivate {
+
+  readonly logger = new Logger(RolesGuard.name);
+
   constructor(
     reflector: Reflector,
     private readonly _authService: AuthService,
@@ -23,23 +26,31 @@ export class RolesGuard extends CustomAuthGuard implements CanActivate {
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(ROLES_KEY, [context.getHandler(), context.getClass()]) as Role[];
 
     const request = context.switchToHttp().getRequest();
+    const userId = request.user?.id;
+
+    const user = await this._authService.getProfile(userId);
+
+    this.logger.debug(`User: ${JSON.stringify(user)}`);
 
 
-    try {
-      const request = context.switchToHttp().getRequest();
-      const userId = request.user?.userId;
-
-      const user = await this._authService.getProfile(userId);
-
-      if (!user) {
-        throw new UnauthorizedException("Invalid access token");
-      }
-
-      return this.validateRoles(user.roles, requiredRoles);
-
-    } catch {
-      throw new UnauthorizedException("Invalid access token");
+    if (!user) {
+      throw new UnauthorizedException("User not found with the provided token");
     }
+
+    const isValidated = this.validateRoles(user.roles, requiredRoles);
+
+    this.logger.debug(`Required Roles: ${requiredRoles}`);
+    this.logger.debug(`isValidated: ${isValidated}`);
+
+    if (!isValidated) {
+      throw new UnauthorizedException("You are not authorized to access this resource , please contact your administrator");
+    }
+
+    this.logger.debug(`User is authorized to access this resource`);
+
+    return true;
+
+
   }
 
 

@@ -35,7 +35,7 @@ export class CustomAuthGuard extends AuthGuard("jwt") {
             const user = await this.authService.validateToken(token);
 
             if (!user) {
-                throw new UnauthorizedException("Invalid access token");
+                throw new UnauthorizedException("User not found with the provided token, please login again");
             }
 
             req.user = user;
