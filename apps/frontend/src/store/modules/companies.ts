@@ -10,7 +10,7 @@ import {
   RESET_STATE,
   SET_METADATA,
 } from "@/store/mutation";
-import { FETCH_COMPANIES, FETCH_COMPANY } from "@/store/actions";
+import { CREATE_COMPANY, FETCH_COMPANIES, FETCH_COMPANY } from "@/store/actions";
 import { Metadata } from "@/types/employee.types";
 
 export const getters = {
@@ -85,6 +85,24 @@ export const actions = {
     try {
       const { data } = await api.get(`/companies/${id}`);
       commit(SET_COMPANY, data);
+    } catch (error: any) {
+      commit(SET_ERROR, error.message);
+    } finally {
+      commit(SET_LOADING, false);
+    }
+  },
+
+  async [CREATE_COMPANY]({ commit }: any, company: Company) {
+    commit(SET_LOADING, true);
+    try {
+      const response = await api.post("/companies", company);
+
+      if (response.status === 201) {
+        commit(SET_COMPANY, response.data);
+      }
+
+      return true;
+
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {

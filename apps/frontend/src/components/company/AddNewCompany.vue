@@ -91,7 +91,7 @@
       <div class="flex flex-row gap-5">
         <button
           @click="handleAddCompany"
-          type="submit"
+          type="button"
           class="text-white bg-blue-700 px-16 py-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Submit
@@ -105,6 +105,9 @@
 </template>
 
 <script lang="ts">
+import store from '@/store';
+import { CREATE_COMPANY } from '@/store/actions';
+
 export default {
   name: 'AddNewEmployee',
   props: {
@@ -130,7 +133,22 @@ export default {
   components: {},
   computed: {},
   methods: {
-    async handleAddCompany() {},
+    async handleAddCompany() {
+      const isSuccess = await store.dispatch(CREATE_COMPANY, {
+        name: this.name,
+        email: this.email,
+        logo: this.logo,
+        phone: this.phone,
+        website: this.website,
+        description: this.description,
+      });
+
+      if (isSuccess) {
+        alert('Company added successfully');
+        this.close();
+      }
+    },
+
     cancel() {
       this.close();
     },

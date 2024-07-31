@@ -37,25 +37,9 @@ const router = createRouter({
       },
     },
     {
-      path: '/employee/:id',
-      name: 'employee-detail',
-      component: () => import('../views/EmployeeDetailView.vue'),
-      meta: {
-        authRequired: 'true',
-      },
-    },
-    {
       path: '/companies',
       name: 'companies',
       component: () => import('../views/CompanyView.vue'),
-      meta: {
-        authRequired: 'true',
-      },
-    },
-    {
-      path: '/companies/:id',
-      name: 'company-detail',
-      component: () => import('../views/CompanyDetailView.vue'),
       meta: {
         authRequired: 'true',
       },

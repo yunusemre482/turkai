@@ -15,12 +15,20 @@ async function bootstrap() {
 
   const PORT = configService.get('PORT');
 
-
-
-
-  // enable cors
-  app.enableCors();
-
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:4200',
+      'http://www.example.com',
+      'http://app.example.com',
+      'https://example.com',
+      'https://www.example.com',
+      'https://app.example.com',
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "Access-Control-Allow-Origin"],
+  });
   app.setGlobalPrefix('api');
 
   app.enableVersioning({

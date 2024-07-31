@@ -1,13 +1,15 @@
 <template>
   <DefaultLayout>
-    <div class="flex flex-col px-4 py-2 gap-5">
+    <div
+      class="lex flex-col px-4 py-2 gap-5 max-w-screen-2xl w-full mx-auto my-auto"
+    >
       <div class="bg-graydark flex flex-row py-4 px-4">
         <h3 class="flex flex-row text-white px-5 text-center py-3">
           Company List
         </h3>
         <button
           class="ml-auto bg-cyan-200 rounded-md text-boxdark px-10 py-2"
-          @click="openModal"
+          @click="showAddCompanyModal"
         >
           Add New Company
         </button>
@@ -61,6 +63,7 @@
           </ul>
         </nav>
       </div>
+      <AddNewCompany :open="isAddFieldOn" :close="handleClose" />
     </div>
   </DefaultLayout>
 </template>
@@ -70,8 +73,8 @@ import { mapGetters } from 'vuex';
 import store from '@/store';
 import CompanyList from '@/components/company/CompanyList.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import { FETCH_COMPANIES, FETCH_EMPLOYEES } from '@/store/actions';
-import { DELETE_COMPANY } from '@/store/mutation';
+import { FETCH_COMPANIES } from '@/store/actions';
+import AddNewCompany from '@/components/company/AddNewCompany.vue';
 
 export default {
   name: 'Company',
@@ -79,11 +82,9 @@ export default {
     return {
       isAddFieldOn: false,
       isEditFieldOn: false,
-      isModalOpen: false,
     };
   },
   computed: {
-    isAddFieldOn() {},
     isEditFieldOn() {},
     ...mapGetters({
       companies: 'companies',
@@ -92,6 +93,7 @@ export default {
   },
   components: {
     CompanyList,
+    AddNewCompany,
   },
   beforeRouteEnter(to, from, next) {
     Promise.all([store.dispatch(`${FETCH_COMPANIES}`)]).then(() => {
@@ -102,7 +104,14 @@ export default {
     fetchCompanies() {
       store.dispatch(FETCH_COMPANIES);
     },
-    showAddField() {},
+    showAddCompanyModal() {
+      console.log('showAddCompanyModal');
+
+      this.isAddFieldOn = true;
+    },
+    handleClose() {
+      this.isAddFieldOn = false;
+    },
 
     changePage(newPage) {
       console.log('changing page to', newPage);
@@ -111,7 +120,6 @@ export default {
         store.dispatch(FETCH_COMPANIES, { page: newPage, limit: 15 });
       }
     },
-
   },
   created() {
     this.fetchCompanies();

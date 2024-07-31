@@ -15,11 +15,31 @@ export class CompaniesService {
   public async create(company: CreateCompanyDTO) {
     this.logger.debug('Creating company with info :', JSON.stringify(company));
 
-    return this.prismaService.company.create({
-      data: {
-        ...company
+
+    const companyExist = await this.prismaService.company.findFirst({
+      where: {
+        email: company.email,
+        deletedAt: null,
       }
     });
+
+    if (companyExist) {
+      throw new BadRequestException('Company already exists with this email!');
+    }
+
+
+    try {
+      const createdCompany = await this.prismaService.company.create({
+        data: {
+          ...company
+        }
+      });
+
+      return createdCompany;
+
+    } catch (error: unknown) {
+      throw new BadRequestException('Company not created because of some issue');
+    }
   }
 
 
