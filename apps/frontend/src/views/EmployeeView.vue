@@ -96,10 +96,8 @@ export default {
     AddNewEmp,
     EditEmp,
   },
-  beforeRouteEnter(to, from, next) {
-    Promise.all([store.dispatch(`${FETCH_EMPLOYEES}`)]).then(() => {
-      next();
-    });
+  beforeCreate(to, from, next) {
+    Promise.all([store.dispatch(`${FETCH_EMPLOYEES}`)]);
   },
   methods: {
     fetchEmployees() {

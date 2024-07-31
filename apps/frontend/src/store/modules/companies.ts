@@ -8,12 +8,15 @@ import {
   SET_LOADING,
   SET_ERROR,
   RESET_STATE,
+  SET_METADATA,
 } from "@/store/mutation";
 import { FETCH_COMPANIES, FETCH_COMPANY } from "@/store/actions";
+import { Metadata } from "@/types/employee.types";
 
 export const getters = {
   companies: (state: State) => state.companies,
   company: (state: State) => state.company,
+  companyMetadata: (state: State) => state.metadata,
 };
 
 export const mutations = {
@@ -37,6 +40,9 @@ export const mutations = {
   [SET_LOADING](state: State, loading: boolean) {
     state.loading = loading;
   },
+  [SET_METADATA](state: State, metadata: Metadata) {
+    state.metadata = metadata;
+  },
   [SET_ERROR](state: State, error: string) {
     state.error = error;
   },
@@ -46,11 +52,28 @@ export const mutations = {
 
 };
 export const actions = {
-  async [FETCH_COMPANIES]({ commit }: any) {
+  async [FETCH_COMPANIES]({ commit }: any, payload: Metadata) {
+
+
     commit(SET_LOADING, true);
     try {
-      const { data } = await api.get("/companies");
+
+      const queryParams = new URLSearchParams();
+
+      if (payload.page) {
+        queryParams.append("page", payload.page.toString());
+      }
+
+      if (payload.limit) {
+        queryParams.append("limit", payload.limit.toString());
+      }
+
+      const { data } = await api.get("/companies", {
+        params: queryParams,
+      });
+
       commit(SET_COMPANIES, data.data.data);
+      commit(SET_METADATA, data.data.meta);
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {
@@ -71,7 +94,7 @@ export const actions = {
   async [UPDATE_COMPANY]({ commit }: any, company: Company) {
     commit(SET_LOADING, true);
     try {
-      await api.put(`/companies/${company.id}`, company);
+      await api.patch(`/companies/${company.id}`, company);
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {
@@ -83,6 +106,7 @@ export const actions = {
     try {
       await api.delete(`/companies/${id}`);
       commit(SET_COMPANY, null);
+      commit(DELETE_COMPANY, id);
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {
@@ -95,6 +119,15 @@ export const actions = {
 };
 
 const initialState = {
+  companies: [],
+  company: null,
+  loading: false,
+  error: "",
+  metadata: {
+    page: 1,
+    limit: 10,
+    total: 0,
+  },
 
 };
 

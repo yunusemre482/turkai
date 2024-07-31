@@ -32,7 +32,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(employee, index) in employees" :key="index">
+          <tr
+            v-for="(employee, index) in employees"
+            :key="index"
+            class="flex-col gap-3 px-4 py-5"
+          >
             <td class="py-5 px-4 pl-9 xl:pl-11">
               <h5 class="font-medium text-black dark:text-white">
                 {{ employee.firstName + ' ' + employee.lastName }}
@@ -56,7 +60,35 @@
 
             <td class="py-5 px-4">
               <div class="flex items-center space-x-3.5">
-                <button class="hover:text-primary">
+                <button
+                  class="hover:text-primary"
+                  @click="openEmployeeEditModal()"
+                >
+                  <svg
+                    class="feather feather-edit"
+                    fill="none"
+                    height="18"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    />
+                    <path
+                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                    />
+                  </svg>
+                </button>
+
+                <button
+                  class="hover:text-primary"
+                  @click="deleteEmployee(employee.id)"
+                >
                   <svg
                     class="fill-current"
                     width="18"
@@ -83,33 +115,14 @@
                     />
                   </svg>
                 </button>
-
-                <button
-                  class="hover:text-primary"
-                  @click="deleteEmployee(employee.id)"
-                >
-                  <svg
-                    class="feather feather-edit"
-                    fill="none"
-                    height="18"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="18"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                    />
-                    <path
-                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                    />
-                  </svg>
-                </button>
               </div>
             </td>
+
+            <EditEmployee
+              :open="isModalOpen"
+              :close="handleClose"
+              :employee="employee"
+            />
           </tr>
         </tbody>
       </table>
@@ -120,17 +133,32 @@
 <script lang="ts">
 import store from '@/store';
 import { DELETE_EMPLOYEE } from '@/store/mutation';
+import EditEmployee from './EditEmployee.vue';
 import { Employee } from '@/types/employee.types';
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'EmployeeList',
+  components: {
+    EditEmployee,
+  },
+  data() {
+    return {
+      isModalOpen: false,
+    };
+  },
   computed: {
     employees() {
       return store.getters.employees;
     },
   },
   methods: {
+
+    openEmployeeEditModal() {
+      this.isModalOpen = true;
+    },
+    handleClose() {
+      this.isModalOpen = false;
+    },
     async deleteEmployee(id: number) {
       const isSuccess = await store.dispatch(DELETE_EMPLOYEE, id);
 

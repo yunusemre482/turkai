@@ -59,6 +59,23 @@ const router = createRouter({
       meta: {
         authRequired: 'true',
       },
+    },
+    {
+      path: '/unauthorized',
+      name: 'unauthorized',
+      component: () => import('../views/UnauthorizedView.vue'),
+      meta: {
+        authRequired: 'false',
+      },
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: () => import('../views/NotFoundView.vue'),
+      meta: {
+        authRequired: 'false',
+      },
+
     }
   ],
 });
@@ -67,8 +84,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   //check page is protected or not
   if (to.meta.authRequired === 'true') {
-
-
     //access check
     if (
       localStorage.getItem('access_token') &&
@@ -81,7 +96,7 @@ router.beforeEach((to, from, next) => {
       })
     }
   } else {
-    return next()
+    next()
   }
 });
 

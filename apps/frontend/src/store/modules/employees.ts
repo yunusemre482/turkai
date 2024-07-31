@@ -34,7 +34,7 @@ export const mutations = {
       return e;
     });
   },
-  [DELETE_EMPLOYEE](state: State, id: number) {
+  [DELETE_EMPLOYEE](state: State, id: string) {
     state.employees = state.employees.filter((employee) => employee.id !== id);
   },
   [SET_LOADING](state: State, loading: boolean) {
@@ -101,21 +101,26 @@ export const actions = {
       commit(SET_LOADING, false);
     }
   },
-  async [UPDATE_EMPLOYEE]({ commit }: any, employee: Employee) {
+  async [UPDATE_EMPLOYEE]({ commit }: any, {
+    employee,
+    id
+  }: { employee: Employee, id: string }) {
+
     commit(SET_LOADING, true);
     try {
-      await api.put(`/employees/${employee.id}`, employee);
+      await api.patch(`/employees/${id}`, employee);
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {
       commit(SET_LOADING, false);
     }
   },
-  async [DELETE_EMPLOYEE]({ commit }: any, id: number) {
+  async[DELETE_EMPLOYEE]({ commit }: any, id: number) {
     commit(SET_LOADING, true);
     try {
       await api.delete(`/employees/${id}`);
       commit(SET_EMPLOYEE, null);
+      commit(DELETE_EMPLOYEE, id);
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {

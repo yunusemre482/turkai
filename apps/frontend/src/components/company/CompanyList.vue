@@ -70,8 +70,31 @@
 
             <td class="py-5 px-4">
               <div class="flex items-center space-x-3.5">
-
                 <button class="hover:text-primary">
+                  <svg
+                    class="feather feather-edit"
+                    fill="none"
+                    height="18"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    />
+                    <path
+                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  class="hover:text-primary"
+                  @click="deleteCompany(company.id)"
+                >
                   <svg
                     class="fill-current"
                     width="18"
@@ -98,28 +121,6 @@
                     />
                   </svg>
                 </button>
-
-                <button class="hover:text-primary">
-                  <svg
-                    class="feather feather-edit"
-                    fill="none"
-                    height="18"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="18"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-                    />
-                    <path
-                      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-                    />
-                  </svg>
-                </button>
               </div>
             </td>
           </tr>
@@ -137,13 +138,12 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'CompanyList',
   computed: {
-    companies() {
-      return store.getters.companies;
-    },
+    ...mapGetters(['companies']),
   },
   methods: {
-    deleteEmp(index: number) {},
-    showEditField(emp: Employee) {},
+    async deleteCompany(companyId: string) {
+      await store.dispatch('DELETE_COMPANY', companyId);
+    },
   },
 };
 </script>
