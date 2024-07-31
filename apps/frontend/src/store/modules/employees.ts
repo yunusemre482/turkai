@@ -83,12 +83,21 @@ export const actions = {
   async [CREATE_EMPLOYEE]({ commit }: any, employee: Employee) {
     commit(SET_LOADING, true);
     try {
-      await api.post("/employees", employee);
+      const response = await api.post("/employees/admin", employee);
+
+      if (response.status === 201) {
+        commit(SET_EMPLOYEE, response.data);
+      }
+
+      return true;
+
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {
       commit(SET_LOADING, false);
     }
+
+    return false;
   },
   async [FETCH_EMPLOYEE]({ commit }: any, id: number) {
     commit(SET_LOADING, true);

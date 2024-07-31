@@ -9,7 +9,7 @@
         </h4>
         <button
           class="ml-auto bg-cyan-200 rounded-md text-boxdark px-10 py-2"
-          @click="openModal"
+          @click="showAddEmployeeModal"
         >
           Add New Employee
         </button>
@@ -63,18 +63,22 @@
           </ul>
         </nav>
       </div>
+      <AddNewEmployee
+        :open="isAddFieldOn"
+        :close="handleClose"
+      />
     </div>
   </DefaultLayout>
 </template>
 
 <script>
 import EmployeeList from '@/components/employee/EmployeeList.vue';
-import AddNewEmp from '@/components/employee/AddNewEmployee.vue';
 import EditEmp from '@/components/employee/EditEmployee.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import store from '@/store';
 import { mapGetters } from 'vuex';
 import { FETCH_EMPLOYEES } from '@/store/actions';
+import AddNewEmployee from '@/components/employee/AddNewEmployee.vue';
 
 export default {
   name: 'Employee',
@@ -82,7 +86,6 @@ export default {
     return {
       isAddFieldOn: false,
       isEditFieldOn: false,
-      isModalOpen: false,
     };
   },
   computed: {
@@ -93,7 +96,7 @@ export default {
   },
   components: {
     EmployeeList,
-    AddNewEmp,
+    AddNewEmployee,
     EditEmp,
   },
   beforeCreate(to, from, next) {
@@ -103,7 +106,13 @@ export default {
     fetchEmployees() {
       store.dispatch(FETCH_EMPLOYEES);
     },
-    showAddField() {},
+    showAddEmployeeModal() {
+      this.isAddFieldOn = true;
+    },
+    handleClose() {
+      this.isAddFieldOn = false;
+    },
+
     changePage(newPage) {
       console.log('changing page to', newPage);
 

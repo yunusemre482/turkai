@@ -8,18 +8,18 @@
     >
       <form
         class="max-w-sm mx-auto w-full"
-        v-on:submit.prevent="handleAddEmployee"
+        v-on:submit.prevent="handleAddCompany"
       >
         <div class="mb-5">
           <label
             for="text"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Your First Name</label
+            >Company Name</label
           >
           <input
-            type="firstName"
-            id="firstName"
-            v-model="firstName"
+            type="name"
+            id="name"
+            v-model="name"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="First Name"
             required
@@ -27,24 +27,9 @@
         </div>
         <div class="mb-5">
           <label
-            for="text"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Your Last Name</label
-          >
-          <input
-            type="text"
-            id="lastName"
-            v-model="lastName"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Last Name"
-            required
-          />
-        </div>
-        <div class="mb-5">
-          <label
             for="email"
             class="block mb-2 text-sm font-medium text-white-600 dark:text-white"
-            >Your email</label
+            >Company email</label
           >
           <input
             type="email"
@@ -59,7 +44,7 @@
           <label
             for="text"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Your Phone Number</label
+            >Company Phone Number</label
           >
           <input
             type="text"
@@ -74,29 +59,38 @@
           <label
             for="text"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Select Company</label
+            >Company Logo</label
           >
-          <select
-            id="companyId"
+          <input
+            type="text"
+            id="logo"
+            v-model="logo"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             required
-            v-model="companyId"
-            :aria-selected="companies[0].id"
+            placeholder="Logo Url"
+          />
+        </div>
+
+        <div class="mb-5">
+          <label
+            for="text"
+            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >Company website</label
           >
-            <option
-              v-for="company in companies"
-              :key="company.id"
-              :value="company.id"
-            >
-              {{ company.name }}
-            </option>
-          </select>
+          <input
+            type="text"
+            id="website"
+            v-model="website"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            required
+            placeholder="Website Url"
+          />
         </div>
       </form>
 
       <div class="flex flex-row gap-5">
         <button
-          @click="handleAddEmployee"
+          @click="handleAddCompany"
           type="submit"
           class="text-white bg-blue-700 px-16 py-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
@@ -111,12 +105,6 @@
 </template>
 
 <script lang="ts">
-import store from '@/store';
-import { CREATE_EMPLOYEE, FETCH_COMPANIES } from '@/store/actions';
-import companies from '@/store/modules/companies';
-import { Company } from '@/types/companies.types';
-import { mapGetters } from 'vuex';
-
 export default {
   name: 'AddNewEmployee',
   props: {
@@ -131,57 +119,21 @@ export default {
   },
   data() {
     return {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      companyId: '',
+      name: 'Turkai',
+      email: 'info@turkai.com',
+      logo: 'https://media.licdn.com/dms/image/C4D0BAQHk9_eP8MLtMA/company-logo_200_200/0/1635101899471/turkai_logo?e=2147483647&v=beta&t=Rm4EqGfUY648vRACv6Mzq94mzdE_gb8DPMAEwyblGk0',
+      phone: '+905555535556',
+      website: 'https://turkai.com',
+      description: 'welcome to turkai',
     };
   },
   components: {},
-  computed: {
-    ...mapGetters({
-      companies: 'companies',
-    }),
-  },
+  computed: {},
   methods: {
-    async handleAddEmployee() {
-      console.log('handleAddEmployee', 'employee', this.companies);
-
-      console.log(
-        'Employee adding',
-        this.firstName,
-        this.lastName,
-        this.email,
-        this.phone,
-        this.companyId
-      );
-
-      const isSuccess = await store.dispatch(CREATE_EMPLOYEE, {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        phone: this.phone,
-        companyId: this.companyId,
-      });
-
-      console.log('isSuccess', isSuccess);
-
-      if (isSuccess) {
-        alert('Employee added successfully');
-        this.close();
-      }
-    },
+    async handleAddCompany() {},
     cancel() {
-      console.log('cancel', 'employee', this.companies);
       this.close();
     },
-  },
-  created() {
-    console.log('AddNewEmployee created', this.companies);
-    store.dispatch(FETCH_COMPANIES, {
-      page: 1,
-    });
   },
 };
 </script>
