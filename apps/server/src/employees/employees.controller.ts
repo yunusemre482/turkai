@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } f
 import { EmployeesService } from './employees.service';
 import { CustomAuthGuard } from '@app/auth/guards/auth.guard';
 import { User } from '@app/auth/decorators/user.decorator';
-import { CreateEmployeeDTO } from './dto/create-employee.dto';
+import { CreateEmployeeDTO, CreateEmployeeForAdminDTO } from './dto/create-employee.dto';
 import { FilterAndPaginationDTO } from '@app/infrastructure/dtos/filter-and-pagination.dto';
 import { ValidateUUID } from '@app/infrastructure/dtos/validate-uuid.dto';
 import { UpdateEmployeeDTO } from './dto/update-employee.dto';
@@ -21,6 +21,13 @@ export class EmployeesController {
   @UseGuards(CustomAuthGuard)
   async createEmployee(@User("id") userId: string, @Body() employee: CreateEmployeeDTO) {
     return this.employeesService.create(userId, employee);
+  }
+
+  @Post("admin")
+  @Roles(Role.Admin)
+  @UseGuards(RolesGuard)
+  async createEmployeeForAdmin(@User("id") userId: string, @Body() employee: CreateEmployeeForAdminDTO) {
+    return this.employeesService.createUserForAdmin(employee);
   }
 
   @Get()

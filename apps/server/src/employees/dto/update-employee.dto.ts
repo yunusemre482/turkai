@@ -10,8 +10,12 @@ export class UpdateEmployeeDTO {
   @IsOptional()
   lastName: string;
 
-
-  @IsPhoneNumber()
+  @IsString()
   @IsOptional()
   phone: string;
+
+
+  @IsEmail()
+  @IsOptional()
+  email: string;
 }

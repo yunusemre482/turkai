@@ -1,7 +1,7 @@
 import { FilterAndPaginationDTO } from '@app/infrastructure/dtos/filter-and-pagination.dto';
 import { PrismaService } from '@app/infrastructure/prisma/prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateEmployeeDTO } from './dto/create-employee.dto';
+import { CreateEmployeeDTO, CreateEmployeeForAdminDTO } from './dto/create-employee.dto';
 import { CompanyStatus } from '@prisma/client';
 import { NotFoundError } from 'rxjs';
 import { UpdateEmployeeDTO } from './dto/update-employee.dto';
@@ -11,6 +11,28 @@ export class EmployeesService {
   constructor(
     private readonly prismaService: PrismaService
   ) { }
+
+  public async createUserForAdmin(employee: CreateEmployeeForAdminDTO) {
+    const employeeExist = await this.prismaService.employee.findFirst({
+      where: {
+        email: employee.email,
+        deletedAt: null,
+      }
+    });
+
+    if (employeeExist) {
+      throw new NotFoundException('Employee already exists!');
+    }
+
+    console.log(employee);
+
+    return this.prismaService.employee.create({
+      data: {
+        ...employee,
+      }
+    });
+
+  }
 
   public async create(userId: string, employee: CreateEmployeeDTO) {
 

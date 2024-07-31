@@ -2,6 +2,7 @@ import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from "class-validator";
 
 export class CreateEmployeeDTO {
 
+
   @IsString()
   @IsNotEmpty()
   firstName: string;
@@ -18,4 +19,12 @@ export class CreateEmployeeDTO {
   @IsString()
   @IsNotEmpty()
   companyId: string;
+}
+
+
+export class CreateEmployeeForAdminDTO extends CreateEmployeeDTO {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
 }
