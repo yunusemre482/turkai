@@ -17,4 +17,6 @@ export const SET_COMPANY = "SET_COMPANY";
 export const DELETE_COMPANY = "DELETE_COMPANY";
 export const UPDATE_COMPANY = "UPDATE_COMPANY";
 
+export const SET_TOKEN = "SET_TOKEN";
+export const DELETE_TOKEN = "DELETE_TOKEN";
 

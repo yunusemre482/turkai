@@ -14,8 +14,8 @@ import HeaderArea from '@/components/header/HeaderArea.vue';
       <!-- ===== Header End ===== -->
 
       <!-- ===== Main Content Start ===== -->
-      <main>
-        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+      <main class="h-full w-full">
+        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 h-full flex">
           <slot></slot>
         </div>
       </main>

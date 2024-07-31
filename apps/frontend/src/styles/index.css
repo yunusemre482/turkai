@@ -1,19 +1,19 @@
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
 @layer base {
   body {
-      @apply relative z-1 bg-whiten font-satoshi text-base font-normal text-body dark:text-bodydark dark:bg-boxdark-2;
+    @apply relative z-1 bg-whiten font-satoshi text-base font-normal text-body dark:text-bodydark dark:bg-boxdark-2;
   }
 }
 
-@layer components {}
+@layer components {
+}
 
 @layer utilities {
-
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -37,11 +37,11 @@
 
 /* third-party libraries CSS */
 
-.tableCheckbox:checked~div span {
+.tableCheckbox:checked ~ div span {
   @apply opacity-100;
 }
 
-.tableCheckbox:checked~div {
+.tableCheckbox:checked ~ div {
   @apply border-primary bg-primary;
 }
 
@@ -100,7 +100,7 @@
 
 .flatpickr-months .flatpickr-prev-month:hover svg,
 .flatpickr-months .flatpickr-next-month:hover svg {
-  @apply !fill-primary;
+  @apply fill-primary;
 }
 
 .flatpickr-calendar.arrowTop:before {
@@ -112,11 +112,11 @@
 }
 
 .flatpickr-calendar {
-  @apply !p-6 dark:!bg-boxdark dark:!text-bodydark dark:!shadow-8 2xsm: !w-auto;
+  @apply !p-6 dark:!bg-boxdark dark:!text-bodydark dark:!shadow-8 2xsm:!w-auto;
 }
 
 .flatpickr-day {
-  @apply dark:!text-bodydark dark:hover: !bg-meta-4 dark:hover: !border-meta-4;
+  @apply dark:!text-bodydark hover:!bg-meta-4 dark:hover:!border-meta-4;
 }
 
 .flatpickr-months .flatpickr-prev-month,
@@ -140,8 +140,7 @@ span.flatpickr-weekday,
 }
 
 .flatpickr-day.inRange {
-  box-shadow: -5px 0 0 #F3F4F6,
-    5px 0 0 #F3F4F6 !important;
+  box-shadow: -5px 0 0 #f3f4f6, 5px 0 0 #f3f4f6 !important;
   @apply dark:!shadow-7;
 }
 
@@ -186,12 +185,12 @@ span.flatpickr-weekday,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
   background: #3c50e0;
-  @apply !border-primary !bg-primary hover: !border-primary hover: !bg-primary;
+  @apply !border-primary !bg-primary hover:!border-primary hover:!bg-primary;
 }
 
-.flatpickr-day.selected.startRange+.endRange:not(:nth-child(7n + 1)),
-.flatpickr-day.startRange.startRange+.endRange:not(:nth-child(7n + 1)),
-.flatpickr-day.endRange.startRange+.endRange:not(:nth-child(7n + 1)) {
+.flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
+.flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
+.flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
   box-shadow: -10px 0 0 #3c50e0;
 }
 
@@ -211,15 +210,15 @@ span.flatpickr-weekday,
   @apply right-0;
 }
 
-.taskCheckbox:checked~.box span {
+.taskCheckbox:checked ~ .box span {
   @apply opacity-100;
 }
 
-.taskCheckbox:checked~p {
+.taskCheckbox:checked ~ p {
   @apply line-through;
 }
 
-.taskCheckbox:checked~.box {
+.taskCheckbox:checked ~ .box {
   @apply border-primary bg-primary dark:border-primary;
 }
 

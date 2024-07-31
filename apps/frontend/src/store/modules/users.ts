@@ -1,13 +1,16 @@
 import { State, User } from "@/types/user.types";
 import api from "@/config/axios";
 import {
+  DELETE_TOKEN,
   RESET_STATE,
   SET_ERROR,
   SET_LOADING,
+  SET_TOKEN,
   SET_USER,
   SET_USERS,
 } from "../mutation";
-import { FETCH_USER, FETCH_USERS, SET_FETCHED_USER } from "../actions";
+import { FETCH_USER, FETCH_USERS, LOGIN, LOGOUT, REGISTER, SET_FETCHED_USER } from "../actions";
+import { LoginPayload, RegisterPayload } from "@/types/auth.types";
 
 const initialState: State = {
   users: [],
@@ -44,6 +47,37 @@ export const mutations = {
 };
 
 export const actions = {
+
+  async [LOGIN]({ commit }: any, payload: LoginPayload) {
+    commit(SET_LOADING, true);
+    const response = await api.post("/auth/login", payload);
+
+    if (response.status !== 200) {
+      commit(SET_ERROR, response.data);
+      commit(SET_LOADING, false);
+      return;
+    }
+
+    commit(SET_TOKEN, response.data.access_token);
+    commit(SET_LOADING, false);
+  },
+  async [REGISTER]({ commit }: any, payload: RegisterPayload) {
+    commit(SET_LOADING, true);
+    const response = await api.post("/auth/register", payload);
+
+    if (response.status !== 201) {
+      commit(SET_ERROR, response.data);
+      commit(SET_LOADING, false);
+      return;
+    }
+
+    commit(SET_TOKEN, response.data.access_token);
+    commit(SET_LOADING, false);
+  },
+  async [LOGOUT]({ commit }: any) {
+    commit(DELETE_TOKEN);
+    commit(RESET_STATE);
+  },
   async [FETCH_USERS]({ commit }: any) {
     commit(SET_LOADING, true);
     const response = await api.get("/users");
@@ -76,7 +110,6 @@ export const actions = {
     if (user) {
       commit(SET_USER, user);
     }
-
   },
   [RESET_STATE]({ commit }: any) {
     commit(RESET_STATE);
