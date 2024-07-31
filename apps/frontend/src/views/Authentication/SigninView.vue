@@ -1,41 +1,39 @@
-<script lang="ts">
+<script setup lang="ts">
 import DefaultAuthCard from '@/components/auths/DefaultAuthCard.vue';
 import InputGroup from '@/components/auths/InputGroup.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import store from '@/store';
 import { LOGIN } from '@/store/actions';
 import { ref } from 'vue';
+import router from '@/router';
 
 const pageTitle = ref('Sign In');
 
-export default {
-  components: {
-    DefaultAuthCard,
-    InputGroup,
-    AuthLayout,
-  },
-  setup() {
-    return {
-      pageTitle,
-    };
-  },
-  data() {
-    return {
-      email: '',
-      password: '',
-    };
-  },
-  methods: {
-    onSubmit(e: Event) {
-      e.preventDefault();
+const state = ref({
+  email: '',
+  password: '',
+});
 
-      store.dispatch(LOGIN, {
-        email: this.email,
-        password: this.password,
-      });
-    },
-  },
+const onSubmit = async (e: Event) => {
+  e.preventDefault();
+
+  const isSuccess = await store.dispatch(LOGIN, state.value);
+
+  console.log('isSuccess:', isSuccess);
+
+  if (isSuccess) {
+    router.replace({ name: 'employee' });
+  }
+
+  state.value.email = '';
+  state.value.password = '';
 };
+
+store.subscribe((mutation) => {
+  if (mutation.type === 'SET_ERROR') {
+    console.log('Error:', mutation.payload);
+  }
+});
 </script>
 
 <template>
@@ -45,7 +43,12 @@ export default {
       title="Sign In to TurkAI Admin Panel"
     >
       <form :onSubmit="onSubmit">
-        <InputGroup label="Email" type="email" placeholder="Enter your email">
+        <InputGroup
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          v-model="state.email"
+        >
           <svg
             class="fill-current"
             width="22"
@@ -67,6 +70,7 @@ export default {
           label="Password"
           type="password"
           placeholder="6+ Characters, 1 Capital letter"
+          v-model="state.password"
         >
           <svg
             class="fill-current"
@@ -100,7 +104,7 @@ export default {
         <div class="mt-6 text-center">
           <p class="font-medium">
             Don’t have any account?
-            <router-link to="/auth/signup" class="text-primary"
+            <router-link to="/auth/register" class="text-primary"
               >Sign up</router-link
             >
           </p>

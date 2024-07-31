@@ -1,7 +1,8 @@
 import api from "@/config/axios";
-import { Employee, State } from "@/types/employee.types";
+import { Employee, Metadata, State } from "@/types/employee.types";
 import {
-  RESET_STATE, SET_ERROR, SET_LOADING, SET_EMPLOYEES, SET_EMPLOYEE
+  RESET_STATE, SET_ERROR, SET_LOADING, SET_EMPLOYEES, SET_EMPLOYEE,
+  SET_METADATA
 } from "@/store/mutation";
 import {
   FETCH_EMPLOYEES,
@@ -15,6 +16,7 @@ import {
 export const getters = {
   employees: (state: State) => state.employees,
   employee: (state: State) => state.employee,
+  employeeMetadata: (state: State) => state.metadata,
 };
 
 export const mutations = {
@@ -41,6 +43,9 @@ export const mutations = {
   [SET_ERROR](state: State, error: string) {
     state.error = error;
   },
+  [SET_METADATA](state: State, metadata: Metadata) {
+    state.metadata = metadata;
+  },
   [RESET_STATE](state: State) {
     Object.assign(state, initialState);
   },
@@ -48,11 +53,27 @@ export const mutations = {
 };
 
 export const actions = {
-  async [FETCH_EMPLOYEES]({ commit }: any) {
+  async [FETCH_EMPLOYEES]({ commit }: any, payload: Metadata) {
     commit(SET_LOADING, true);
     try {
-      const { data } = await api.get("/employees");
-      commit(SET_EMPLOYEES, data);
+      const queryParams = new URLSearchParams();
+
+      if (payload.page) {
+        queryParams.append("page", payload.page.toString());
+      }
+      if (payload.limit) {
+        queryParams.append("limit", payload.limit.toString());
+      }
+
+      console.log("queryParams", queryParams);
+
+      const { data } = await api.get("/employees", {
+        params: queryParams,
+      });
+
+      commit(SET_EMPLOYEES, data.data.data);
+      commit(SET_METADATA, data.data.meta);
+
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {
@@ -110,6 +131,12 @@ const initialState: State = {
   employees: [],
   employee: null,
   loading: false,
+  metadata: {
+    total: 0,
+    page: 1,
+    limit: 10,
+    totalPage: 0,
+  },
   error: '',
 };
 

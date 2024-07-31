@@ -1,4 +1,5 @@
 import axios from "axios";
+import tokenService from "./token.service";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_PREFIX = import.meta.env.VITE_API_PREFIX;
@@ -15,8 +16,9 @@ const api = axios.create({
 api.interceptors.request.use(
   function (config) {
     try {
-      const accessToken = localStorage.getItem("accessToken");
-      config.headers["authorization"] = `Bearer ${accessToken}`;
+      const token = tokenService.getAccessToken();
+
+      config.headers["authorization"] = `Bearer ${token}`;
     } catch (error) {
       console.log(error);
     }

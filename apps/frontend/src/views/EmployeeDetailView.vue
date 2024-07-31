@@ -26,7 +26,7 @@ import AddNewEmp from '@/components/employee/AddNewEmployee.vue';
 import EditEmp from '@/components/employee/EditEmployee.vue';
 
 export default {
-  name: 'EmployeeDetailView',
+  name: 'EmployeeDetail',
   computed: {
     isAddFieldOn() {},
     isEditFieldOn() {},

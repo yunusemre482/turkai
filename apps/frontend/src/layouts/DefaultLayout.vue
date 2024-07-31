@@ -19,8 +19,8 @@ import SideBar from '@/components/sidebar/SideBar.vue';
       <!-- ===== Header End ===== -->
 
       <!-- ===== Main Content Start ===== -->
-      <main>
-        <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+      <main class="max-w-screen-lg flex">
+        <div class="mx-auto p-4 md:p-6 2xl:p-10 h-full">
           <slot></slot>
         </div>
       </main>

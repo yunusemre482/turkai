@@ -11,6 +11,7 @@ import {
 } from "../mutation";
 import { FETCH_USER, FETCH_USERS, LOGIN, LOGOUT, REGISTER, SET_FETCHED_USER } from "../actions";
 import { LoginPayload, RegisterPayload } from "@/types/auth.types";
+import tokenService from "@/config/token.service";
 
 const initialState: State = {
   users: [],
@@ -41,6 +42,12 @@ export const mutations = {
   [SET_ERROR](state: State, error: string) {
     state.error = error;
   },
+  [SET_TOKEN](state: State, token: string) {
+    tokenService.saveAccessToken(token);
+  },
+  [DELETE_TOKEN](state: State) {
+    tokenService.destroyAccessToken();
+  },
   [RESET_STATE](state: State) {
     Object.assign(state, initialState);
   },
@@ -55,11 +62,13 @@ export const actions = {
     if (response.status !== 200) {
       commit(SET_ERROR, response.data);
       commit(SET_LOADING, false);
-      return;
+      return false;
     }
 
-    commit(SET_TOKEN, response.data.access_token);
+    commit(SET_TOKEN, response.data.data.access_token);
     commit(SET_LOADING, false);
+
+    return true;
   },
   async [REGISTER]({ commit }: any, payload: RegisterPayload) {
     commit(SET_LOADING, true);
@@ -71,7 +80,6 @@ export const actions = {
       return;
     }
 
-    commit(SET_TOKEN, response.data.access_token);
     commit(SET_LOADING, false);
   },
   async [LOGOUT]({ commit }: any) {

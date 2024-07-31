@@ -19,6 +19,11 @@
             <th
               class="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11"
             >
+              website
+            </th>
+            <th
+              class="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11"
+            >
               Phone
             </th>
             <th
@@ -32,30 +37,40 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(employee, index) in employees" :key="index">
+          <tr
+            v-for="(company, index) in companies"
+            :key="index"
+            v-if="companies.length !== 0"
+          >
             <td class="py-5 px-4 pl-9 xl:pl-11">
               <h5 class="font-medium text-black dark:text-white">
-                {{ employee.firstName + ' ' + employee.lastName }}
+                {{ company.name }}
               </h5>
             </td>
             <td class="py-5 px-4 pl-9 xl:pl-11">
               <h5 class="font-medium text-black dark:text-white">
-                {{ employee.email }}
+                {{ company.email }}
               </h5>
             </td>
             <td class="py-5 px-4 pl-9 xl:pl-11">
               <h5 class="font-medium text-black dark:text-white">
-                {{ employee.phone }}
+                {{ company.website }}
+              </h5>
+            </td>
+            <td class="py-5 px-4 pl-9 xl:pl-11">
+              <h5 class="font-medium text-black dark:text-white">
+                {{ company.phone }}
               </h5>
             </td>
             <td class="py-5 px-4">
               <p class="text-black dark:text-white">
-                {{ employee.createdAt }}
+                {{ company.createdAt }}
               </p>
             </td>
 
             <td class="py-5 px-4">
               <div class="flex items-center space-x-3.5">
+
                 <button class="hover:text-primary">
                   <svg
                     class="fill-current"
@@ -84,10 +99,7 @@
                   </svg>
                 </button>
 
-                <button
-                  class="hover:text-primary"
-                  @click="deleteEmployee(employee.id)"
-                >
+                <button class="hover:text-primary">
                   <svg
                     class="feather feather-edit"
                     fill="none"
@@ -119,25 +131,19 @@
 
 <script lang="ts">
 import store from '@/store';
-import { DELETE_EMPLOYEE } from '@/store/mutation';
 import { Employee } from '@/types/employee.types';
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'EmployeeList',
+  name: 'CompanyList',
   computed: {
-    employees() {
-      return store.getters.employees;
+    companies() {
+      return store.getters.companies;
     },
   },
   methods: {
-    async deleteEmployee(id: number) {
-      const isSuccess = await store.dispatch(DELETE_EMPLOYEE, id);
-
-      if (isSuccess) {
-        console.log('Employee deleted successfully');
-      }
-    },
+    deleteEmp(index: number) {},
+    showEditField(emp: Employee) {},
   },
 };
 </script>

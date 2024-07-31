@@ -71,14 +71,13 @@ router.beforeEach((to, from, next) => {
 
     //access check
     if (
-      //if user is admin or super admin
-      to.meta.role === 'admin' && localStorage.getItem('role') === 'admin'
-      //if user is logged in
+      localStorage.getItem('access_token') &&
+      localStorage.getItem('access_token') !== 'undefined'
     ) {
       return next()
     } else {
       router.push({
-        name: 'Unauthorized'
+        name: 'unauthorized'
       })
     }
   } else {

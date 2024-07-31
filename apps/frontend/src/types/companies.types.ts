@@ -1,3 +1,5 @@
+import { Metadata } from "./employee.types";
+
 export type Company = {
   id: number;
   name: string;
@@ -12,5 +14,6 @@ export type State = {
   company: Company | null;
   loading: boolean;
   error: string;
+  metadata: Metadata
 };
 

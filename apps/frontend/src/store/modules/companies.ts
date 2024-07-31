@@ -11,8 +11,6 @@ import {
 } from "@/store/mutation";
 import { FETCH_COMPANIES, FETCH_COMPANY } from "@/store/actions";
 
-
-
 export const getters = {
   companies: (state: State) => state.companies,
   company: (state: State) => state.company,
@@ -52,7 +50,7 @@ export const actions = {
     commit(SET_LOADING, true);
     try {
       const { data } = await api.get("/companies");
-      commit(SET_COMPANIES, data);
+      commit(SET_COMPANIES, data.data.data);
     } catch (error: any) {
       commit(SET_ERROR, error.message);
     } finally {
