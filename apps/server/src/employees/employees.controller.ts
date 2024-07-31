@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CustomAuthGuard } from '@app/auth/guards/auth.guard';
 import { User } from '@app/auth/decorators/user.decorator';
@@ -6,6 +6,9 @@ import { CreateEmployeeDTO } from './dto/create-employee.dto';
 import { FilterAndPaginationDTO } from '@app/infrastructure/dtos/filter-and-pagination.dto';
 import { ValidateUUID } from '@app/infrastructure/dtos/validate-uuid.dto';
 import { UpdateEmployeeDTO } from './dto/update-employee.dto';
+import { RolesGuard } from '@app/auth/guards/role.guard';
+import { Roles } from '@app/auth/decorators/role.decorator';
+import { Role } from '@app/auth/enums/role.enum';
 
 @Controller({
   path: 'employees',
@@ -36,6 +39,13 @@ export class EmployeesController {
   @UseGuards(CustomAuthGuard)
   async updateEmployee(@Param('id', ValidateUUID) id: string, @Body() employee: UpdateEmployeeDTO) {
     return this.employeesService.updateEmployee(id, employee);
+  }
+
+  @Delete(':id')
+  @Roles(Role.Admin)
+  @UseGuards(RolesGuard)
+  async deleteEmployee(@Param('id', ValidateUUID) id: string) {
+    return this.employeesService.deleteEmployee(id);
   }
 
 }

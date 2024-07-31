@@ -16,7 +16,7 @@ export class FilterAndPaginationDTO {
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10) || 15)
-  limit?: number = 15;
+  limit: number = 15;
 
   @IsEnum(['id', 'createdAt', 'updatedAt'])
   @Transform(({ value }) => value || 'createdAt')

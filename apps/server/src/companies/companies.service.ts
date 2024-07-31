@@ -2,6 +2,7 @@ import { FilterAndPaginationDTO } from '@app/infrastructure/dtos/filter-and-pagi
 import { PrismaService } from '@app/infrastructure/prisma/prisma.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CreateCompanyDTO } from './dto/create-company.dto';
+import { CompanyStatus } from '@prisma/client';
 
 @Injectable()
 export class CompaniesService {
@@ -36,6 +37,7 @@ export class CompaniesService {
           name: {
             contains: filter,
           },
+          deletedAt: null
         },
       }),
       this.prismaService.company.count({
@@ -90,5 +92,29 @@ export class CompaniesService {
     return updatedCompany;
   }
 
+
+  public async deleteCompany(companyId: string) {
+    this.logger.debug('Deleting company with id :', companyId);
+
+    try {
+      const company = await this.prismaService.company.update({
+        where: {
+          id: companyId,
+        },
+        data: {
+          deletedAt: new Date(),
+          status: CompanyStatus.INACTIVE
+        }
+      });
+
+      if (!company) {
+        throw new BadRequestException('Company not found');
+      }
+
+      return company;
+    } catch (error) {
+      throw new BadRequestException('Company not found');
+    }
+  }
 
 }

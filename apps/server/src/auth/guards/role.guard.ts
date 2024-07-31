@@ -6,7 +6,6 @@ import { ROLES_KEY } from '../decorators/role.decorator';
 import { Role } from '@prisma/client';
 
 
-
 @Injectable()
 export class RolesGuard extends CustomAuthGuard implements CanActivate {
 
@@ -14,7 +13,7 @@ export class RolesGuard extends CustomAuthGuard implements CanActivate {
 
   constructor(
     reflector: Reflector,
-    private readonly _authService: AuthService,
+    private readonly _authService: AuthService
   ) {
     super(reflector, _authService);
   }
@@ -34,7 +33,11 @@ export class RolesGuard extends CustomAuthGuard implements CanActivate {
 
 
     if (!user) {
-      throw new UnauthorizedException("User not found with the provided token");
+      throw new UnauthorizedException('User not found with the provided token');
+    }
+
+    if (user && !user.roles) {
+      throw new UnauthorizedException('User not found with the provided roles');
     }
 
     const isValidated = this.validateRoles(user.roles, requiredRoles);
@@ -43,7 +46,7 @@ export class RolesGuard extends CustomAuthGuard implements CanActivate {
     this.logger.debug(`isValidated: ${isValidated}`);
 
     if (!isValidated) {
-      throw new UnauthorizedException("You are not authorized to access this resource , please contact your administrator");
+      throw new UnauthorizedException('You are not authorized to access this resource , please contact your administrator');
     }
 
     this.logger.debug(`User is authorized to access this resource`);
@@ -54,7 +57,10 @@ export class RolesGuard extends CustomAuthGuard implements CanActivate {
   }
 
 
-  private validateRoles(roles: Role[], userRoles: Role[]): boolean {
+  private validateRoles(roles: Role[] | undefined, userRoles: Role[]): boolean {
+
+    if (!roles) return false;
+
     return userRoles.some((role) => roles.includes(role));
   }
 }

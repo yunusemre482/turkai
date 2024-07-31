@@ -13,21 +13,21 @@ export class UploadService {
   private static readonly OBJECT_REACH_EXPIRATION_TIME = 60; // 7 days
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {
     const NODE_ENV = this.configService.get<string>('NODE_ENV');
 
     const OPTIONS = {
       accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
       secretAccessKey: this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
-      region: this.configService.get<string>('AWS_REGION'),
+      region: this.configService.get<string>('AWS_REGION')
     };
 
     if (NODE_ENV === 'development') {
       Object.assign(OPTIONS, {
         endpoint: this.configService.get<string>('AWS_S3_ENDPOINT'),
         s3ForcePathStyle: true,
-        signatureVersion: 'v4',
+        signatureVersion: 'v4'
       });
 
     }
@@ -44,7 +44,7 @@ export class UploadService {
       .upload({
         Bucket: bucket,
         Key: name,
-        Body: file,
+        Body: file
       })
       .promise();
   }
@@ -56,20 +56,22 @@ export class UploadService {
         Key: `/images/${randomUUID()}.jpg`,
         Body: file,
         ContentEncoding: 'base64',
-        ContentType: 'image/jpeg',
+        ContentType: 'image/jpeg'
       })
       .promise();
   }
 
   public async deleteFile(location: string, bucket: BucketName) {
-    let fileKey = decodeURI(location);
+    let fileKey: string | undefined = decodeURI(location);
     const datas = fileKey.split('amazonaws.com/');
     fileKey = datas.pop();
+
+    if (!fileKey) return;
 
     await this.s3
       .deleteObject({
         Bucket: bucket,
-        Key: fileKey,
+        Key: fileKey
       })
       .promise();
   }
@@ -78,7 +80,7 @@ export class UploadService {
     return this.s3.getSignedUrl('getObject', {
       Bucket: bucketName,
       Key: fileName,
-      Expires: UploadService.OBJECT_REACH_EXPIRATION_TIME,
+      Expires: UploadService.OBJECT_REACH_EXPIRATION_TIME
     });
   }
 

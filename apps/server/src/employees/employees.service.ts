@@ -161,4 +161,23 @@ export class EmployeesService {
   }
 
 
+  public async deleteEmployee(employeeId: string) {
+    try {
+      const employee = await this.prismaService.employee.update({
+        where: {
+          id: employeeId,
+        },
+        data: {
+          deletedAt: new Date(),
+        }
+      });
+
+      return employee;
+
+    } catch (error) {
+      throw new NotFoundException('Employee not found!');
+    }
+  }
+
+
 }

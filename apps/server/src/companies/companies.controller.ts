@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CustomAuthGuard } from '@app/auth/guards/auth.guard';
 import { FilterAndPaginationDTO } from '@app/infrastructure/dtos/filter-and-pagination.dto';
@@ -54,4 +54,12 @@ export class CompaniesController {
     return this.companiesService.updateCompany(companyId, company);
   }
 
+  @Delete(":id")
+  @Roles(Role.Admin)
+  @UseGuards(RolesGuard)
+  public async deleteCompany(
+    @Param('id', ValidateUUID) companyId: string,
+  ) {
+    return this.companiesService.deleteCompany(companyId);
+  }
 }
