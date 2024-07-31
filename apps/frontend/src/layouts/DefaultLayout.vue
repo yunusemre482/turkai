@@ -1,13 +1,21 @@
-<script setup lang="ts">
+<script lang="ts">
 import HeaderArea from '@/components/header/HeaderArea.vue';
 import SideBar from '@/components/sidebar/SideBar.vue';
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'MainLayout',
+  components: {
+    SideBar,
+  },
+});
 </script>
 
 <template>
   <!-- ===== Page Wrapper Start ===== -->
   <div class="flex h-screen overflow-hidden">
     <!-- ===== Sidebar Start ===== -->
-    <SideBar />
+    <side-bar />
     <!-- ===== Sidebar End ===== -->
 
     <!-- ===== Content Area Start ===== -->
@@ -19,7 +27,7 @@ import SideBar from '@/components/sidebar/SideBar.vue';
       <!-- ===== Header End ===== -->
 
       <!-- ===== Main Content Start ===== -->
-      <main class="max-w-screen-lg flex">
+      <main class="w-[calc(100%-16rem)] ml-64 p-2 max-w-8xl flex justify-center">
         <div class="mx-auto p-4 md:p-6 2xl:p-10 h-full">
           <slot></slot>
         </div>

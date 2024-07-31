@@ -135,6 +135,7 @@ import store from '@/store';
 import { DELETE_EMPLOYEE } from '@/store/mutation';
 import EditEmployee from './EditEmployee.vue';
 import { Employee } from '@/types/employee.types';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'EmployeeList',
@@ -147,12 +148,9 @@ export default {
     };
   },
   computed: {
-    employees() {
-      return store.getters.employees;
-    },
+    ...mapGetters(['employees']),
   },
   methods: {
-
     openEmployeeEditModal() {
       this.isModalOpen = true;
     },

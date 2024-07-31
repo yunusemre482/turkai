@@ -63,10 +63,7 @@
           </ul>
         </nav>
       </div>
-      <AddNewEmployee
-        :open="isAddFieldOn"
-        :close="handleClose"
-      />
+      <AddNewEmployee :open="isAddFieldOn" :close="handleClose" />
     </div>
   </DefaultLayout>
 </template>
@@ -98,9 +95,17 @@ export default {
     EmployeeList,
     AddNewEmployee,
     EditEmp,
+    DefaultLayout,
   },
-  beforeCreate(to, from, next) {
-    Promise.all([store.dispatch(`${FETCH_EMPLOYEES}`)]);
+  beforeRouteEnter(to, from, next) {
+    Promise.all([
+      store.dispatch(`${FETCH_EMPLOYEES}`, {
+        page: 1,
+        limit: 15,
+      }),
+    ]).then(() => {
+      next();
+    });
   },
   methods: {
     fetchEmployees() {

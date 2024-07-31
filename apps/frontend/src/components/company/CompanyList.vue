@@ -70,7 +70,10 @@
 
             <td class="py-5 px-4">
               <div class="flex items-center space-x-3.5">
-                <button class="hover:text-primary">
+                <button
+                  class="hover:text-primary"
+                  @click="openEditModal(company)"
+                >
                   <svg
                     class="feather feather-edit"
                     fill="none"
@@ -123,6 +126,12 @@
                 </button>
               </div>
             </td>
+            <EditCompany
+              v-bind:key="company.id"
+              :open="isEditModalOpen"
+              :close="handleClose"
+              :company="selectedCompany"
+            />
           </tr>
         </tbody>
       </table>
@@ -132,17 +141,43 @@
 
 <script lang="ts">
 import store from '@/store';
-import { Employee } from '@/types/employee.types';
 import { mapGetters } from 'vuex';
+import EditCompany from './EditCompany.vue';
+import { Company } from '@/types/companies.types';
 
 export default {
   name: 'CompanyList',
+  components: {
+    EditCompany,
+  },
   computed: {
     ...mapGetters(['companies']),
+  },
+  data() {
+    return {
+      isEditModalOpen: false,
+      selectedCompany: {
+        id: '',
+        name: '',
+        email: '',
+        website: '',
+        phone: '',
+        description: '',
+      } as unknown as Company,
+    };
   },
   methods: {
     async deleteCompany(companyId: string) {
       await store.dispatch('DELETE_COMPANY', companyId);
+    },
+    handleClose() {
+      this.isEditModalOpen = false;
+    },
+    openEditModal(company: Company) {
+      console.log('openEditModal', company);
+
+      this.selectedCompany = company;
+      this.isEditModalOpen = true;
     },
   },
 };

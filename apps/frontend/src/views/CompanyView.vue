@@ -94,6 +94,7 @@ export default {
   components: {
     CompanyList,
     AddNewCompany,
+    DefaultLayout,
   },
   beforeRouteEnter(to, from, next) {
     Promise.all([store.dispatch(`${FETCH_COMPANIES}`)]).then(() => {

@@ -12,6 +12,7 @@ import {
 import { FETCH_USER, FETCH_USERS, LOGIN, LOGOUT, REGISTER, SET_FETCHED_USER } from "../actions";
 import { LoginPayload, RegisterPayload } from "@/types/auth.types";
 import tokenService from "@/config/token.service";
+import router from "@/router";
 
 const initialState: State = {
   users: [],
@@ -47,6 +48,10 @@ export const mutations = {
   },
   [DELETE_TOKEN](state: State) {
     tokenService.destroyAccessToken();
+  },
+  [LOGOUT](state: State) {
+    tokenService.destroyAccessToken();
+    router.push("/auth/login");
   },
   [RESET_STATE](state: State) {
     Object.assign(state, initialState);

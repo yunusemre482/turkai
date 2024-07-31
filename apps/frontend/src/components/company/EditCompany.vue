@@ -4,12 +4,9 @@
     v-if="open"
   >
     <div
-      class="absolute w-[28rem] mx-auto gap-5 rounded-3xl bg-slate-700 flex flex-col items-center justify-between py-8 px-2"
+      class="absolute w-[28rem] mx-auto gap-10 rounded-3xl bg-slate-700 flex flex-col items-center justify-between py-10 px-5"
     >
-      <form
-        class="max-w-sm mx-auto w-full"
-        v-on:submit.prevent="handleAddCompany"
-      >
+      <form class="max-w-sm mx-auto w-full">
         <div class="mb-5">
           <label
             for="text"
@@ -86,7 +83,6 @@
             placeholder="Website Url"
           />
         </div>
-
         <div class="mb-5">
           <label
             for="text"
@@ -107,7 +103,7 @@
 
       <div class="flex flex-row gap-5">
         <button
-          @click="handleAddCompany"
+          @click="handleUpdateCompany"
           type="button"
           class="text-white bg-blue-700 px-16 py-2 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
@@ -124,51 +120,79 @@
 <script lang="ts">
 import store from '@/store';
 import { CREATE_COMPANY } from '@/store/actions';
+import { Company } from '@/types/companies.types';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'AddNewEmployee',
   props: {
     open: {
       type: Boolean,
-      required: true,
+      default: false,
     },
     close: {
       type: Function,
+      default: null,
+    },
+    company: {
+      type: Object || null,
+      default: () => ({}),
       required: true,
+    },
+    width: {
+      type: String,
+      default: 'full',
     },
   },
   data() {
     return {
-      name: 'Turkai',
-      email: 'info@turkai.com',
-      logo: 'https://media.licdn.com/dms/image/C4D0BAQHk9_eP8MLtMA/company-logo_200_200/0/1635101899471/turkai_logo?e=2147483647&v=beta&t=Rm4EqGfUY648vRACv6Mzq94mzdE_gb8DPMAEwyblGk0',
-      phone: '+905555535556',
-      website: 'https://turkai.com',
-      description: 'welcome to turkai',
+      name: this.company.name || '',
+      email: this.company.email || '',
+      logo: this.company.logo || '',
+      phone: this.company.phone || '',
+      website: this.company.website || '',
+      description: this.company.description || '',
     };
   },
   components: {},
-  computed: {},
+  computed: {
+    ...mapGetters({
+      companies: 'companies',
+    }),
+    company: {
+      get(): Company {
+        return this.company;
+      },
+      set(value: Company) {
+        this.company = value;
+      },
+    },
+  },
   methods: {
-    async handleAddCompany() {
+    async handleUpdateCompany() {
+      // remove empty fields in the company object
+      const company = Object.fromEntries(
+        Object.entries(this.company).filter(([_, v]) => v !== '')
+      );
+
       const isSuccess = await store.dispatch(CREATE_COMPANY, {
-        name: this.name,
-        email: this.email,
-        logo: this.logo,
-        phone: this.phone,
-        website: this.website,
-        description: this.description,
+        company,
+        id: this.company.id,
       });
 
       if (isSuccess) {
         alert('Company added successfully');
         this.close();
       }
+
       alert('We are sorry, something went wrong');
     },
 
     cancel() {
       this.close();
+    },
+    created() {
+      console.log('company', this.company);
     },
   },
 };
